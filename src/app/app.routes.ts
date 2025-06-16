@@ -1,15 +1,11 @@
 import { Routes } from '@angular/router';
+import { TodoListComponent } from './components/todo-list/todo-list.component';
+import { TodoFormComponent } from './components/todo-form/todo-form.component';
+import { EditTodoComponent } from './components/edit-todo/edit-todo.component';
 
 export const routes: Routes = [
-  {
-    path: '',
-    loadComponent: () =>
-      import('./components/todo-list/todo-list.component').then((m) => m.TodoListComponent),
-  },
-  {
-    path: 'edit/:id',
-    loadComponent: () =>
-      import('./components/edit-todo/edit-todo.component').then((m) => m.EditTodoComponent),
-  },
+  { path: '', component: TodoListComponent },
+  { path: 'add', component: TodoFormComponent },
+  { path: 'edit/:id', component: EditTodoComponent },
   { path: '**', redirectTo: '' }
 ];

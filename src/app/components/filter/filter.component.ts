@@ -6,7 +6,7 @@ export interface FilterOptions {
   category: string;
   priority: string;
   status: string;
-  dueDate: string;
+  dueDate: string | null;
 }
 
 @Component({
@@ -63,8 +63,8 @@ export interface FilterOptions {
         <div class="filter-section">
           <h3>Tarih</h3>
           <div class="date-filter">
-            <input 
-              type="date" 
+            <input
+              type="date"
               [value]="filters.dueDate"
               (change)="onDateChange($event)"
             >
@@ -87,8 +87,8 @@ export interface FilterOptions {
     }
 
     .filter-toggle {
-      background: white;
-      border: none;
+      background: var(--dark-card);
+      border: 1px solid var(--neon-blue);
       padding: 0.8rem 1.5rem;
       border-radius: 5px;
       cursor: pointer;
@@ -96,12 +96,12 @@ export interface FilterOptions {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      color: var(--text-light);
       transition: all 0.3s ease;
     }
 
     .filter-toggle:hover {
-      background: #f5f5f5;
+      box-shadow: var(--neon-shadow);
     }
 
     .filter-toggle i {
@@ -113,7 +113,7 @@ export interface FilterOptions {
     }
 
     .filter-panel {
-      background: white;
+      background: var(--dark-card);
       border-radius: 10px;
       padding: 1.5rem;
       margin-top: 1rem;
@@ -133,7 +133,7 @@ export interface FilterOptions {
     }
 
     .filter-section h3 {
-      color: #333;
+      color: var(--text-light);
       margin-bottom: 1rem;
       font-size: 1.1rem;
     }
@@ -146,29 +146,32 @@ export interface FilterOptions {
 
     .filter-options button {
       padding: 0.5rem 1rem;
-      border: 1px solid #ddd;
+      border: 1px solid var(--neon-blue);
       border-radius: 20px;
-      background: white;
+      background: var(--dark-bg);
+      color: var(--text-light);
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: 0.9rem;
     }
 
     .filter-options button:hover {
-      background: #f5f5f5;
+      box-shadow: var(--neon-shadow);
     }
 
     .filter-options button.active {
-      background: #4a90e2;
-      color: white;
-      border-color: #4a90e2;
+      background: var(--neon-blue);
+      color: var(--dark-bg);
+      border-color: var(--neon-blue);
     }
 
     .date-filter input {
       width: 100%;
       padding: 0.5rem;
-      border: 1px solid #ddd;
+      border: 1px solid var(--neon-blue);
       border-radius: 5px;
+      background: var(--dark-bg);
+      color: var(--text-light);
     }
 
     .filter-actions {
@@ -178,16 +181,17 @@ export interface FilterOptions {
     }
 
     .btn-clear {
-      background: #f5f5f5;
-      border: none;
+      background: var(--dark-bg);
+      border: 1px solid var(--neon-blue);
       padding: 0.8rem 1.5rem;
       border-radius: 5px;
       cursor: pointer;
+      color: var(--text-light);
       transition: all 0.3s ease;
     }
 
     .btn-clear:hover {
-      background: #e0e0e0;
+      box-shadow: var(--neon-shadow);
     }
 
     @media (max-width: 768px) {
@@ -209,7 +213,7 @@ export class FilterComponent {
     category: '',
     priority: '',
     status: '',
-    dueDate: ''
+    dueDate: null
   };
 
   toggleFilter(): void {
@@ -231,7 +235,7 @@ export class FilterComponent {
       category: '',
       priority: '',
       status: '',
-      dueDate: ''
+      dueDate: null
     };
     this.filterChange.emit(this.filters);
   }

@@ -1,15 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-export interface Todo {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  priority: 'Yüksek' | 'Orta' | 'Düşük';
-  dueDate: string;
-  completed: boolean;
-}
+import { Todo } from '../models/todo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +14,9 @@ export class TodoService {
   }
 
   private loadTodos(): void {
-    const storedTodos = localStorage.getItem('todos');
-    if (storedTodos) {
-      this.todos = JSON.parse(storedTodos);
+    const savedTodos = localStorage.getItem('todos');
+    if (savedTodos) {
+      this.todos = JSON.parse(savedTodos);
       this.todosSubject.next(this.todos);
     }
   }
@@ -39,11 +30,15 @@ export class TodoService {
     return this.todosSubject.asObservable();
   }
 
-  getTodoById(id: number): Todo | undefined {
-    return this.todos.find(todo => todo.id === id);
+  getTodoById(id: number): Observable<Todo | undefined> {
+    const todo = this.todos.find(t => t.id === id);
+    return new Observable(observer => {
+      observer.next(todo);
+      observer.complete();
+    });
   }
 
-  addTodo(todo: Omit<Todo, 'id'>): void {
+  addTodo(todo: Omit<Todo, 'id'>): Observable<Todo> {
     const newTodo: Todo = {
       ...todo,
       id: Date.now(),
@@ -51,26 +46,43 @@ export class TodoService {
     };
     this.todos.push(newTodo);
     this.saveTodos();
+    return new Observable(observer => {
+      observer.next(newTodo);
+      observer.complete();
+    });
   }
 
-  updateTodo(todo: Todo): void {
+  updateTodo(todo: Todo): Observable<Todo> {
     const index = this.todos.findIndex(t => t.id === todo.id);
     if (index !== -1) {
       this.todos[index] = todo;
       this.saveTodos();
     }
+    return new Observable(observer => {
+      observer.next(todo);
+      observer.complete();
+    });
   }
 
-  deleteTodo(id: number): void {
+  deleteTodo(id: number): Observable<void> {
     this.todos = this.todos.filter(todo => todo.id !== id);
     this.saveTodos();
+    return new Observable(observer => {
+      observer.next();
+      observer.complete();
+    });
   }
 
-  toggleComplete(id: number): void {
+  toggleComplete(id: number): Observable<Todo> {
     const todo = this.todos.find(t => t.id === id);
     if (todo) {
       todo.completed = !todo.completed;
+      todo.completedAt = todo.completed ? new Date().toISOString() : undefined;
       this.saveTodos();
     }
+    return new Observable(observer => {
+      observer.next(todo!);
+      observer.complete();
+    });
   }
 } 

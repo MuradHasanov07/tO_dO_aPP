@@ -1,59 +1,114 @@
-# TODOAPP
+# 🎯 Görev Yöneticisi Uygulaması
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.2.
+Bu proje, Angular framework'ü kullanılarak geliştirilmiş modern bir görev yönetim uygulamasıdır. Kullanıcıların günlük görevlerini organize etmelerine, takip etmelerine ve yönetmelerine yardımcı olur.
 
-## Development server
+## ✨ Özellikler
 
-To start a local development server, run:
+- 📝 Görev ekleme, düzenleme ve silme
+- 🏷️ Kategorilere göre görev organizasyonu (İş, Kişisel, Alışveriş, Sağlık, Eğitim)
+- ⚡ Öncelik seviyeleri (Yüksek, Orta, Düşük)
+- 📅 Son tarih belirleme
+- ✅ Görev tamamlama işaretleme
+- 🔍 Gelişmiş filtreleme özellikleri
+- 📊 Günlük tamamlanan görev istatistikleri
+- 🌙 Modern ve kullanıcı dostu arayüz
+- 💾 Yerel depolama ile veri kalıcılığı
 
+## 🚀 Kurulum
+
+Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin:
+
+1. Projeyi klonlayın:
+```bash
+git clone https://github.com/kullanici-adi/gorev-yoneticisi.git
+cd gorev-yoneticisi
+```
+
+2. Bağımlılıkları yükleyin:
+```bash
+npm install
+```
+
+3. Uygulamayı başlatın:
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+4. Tarayıcınızda uygulamayı açın:
+```
+http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🛠️ Teknolojiler
 
-```bash
-ng generate --help
+- Angular 17
+- TypeScript
+- HTML5
+- CSS3
+- Font Awesome Icons
+- LocalStorage API
+
+## 📱 Kullanım
+
+### Görev Ekleme
+1. "Yeni Görev" formunu kullanarak görev detaylarını girin
+2. Kategori, öncelik ve son tarih seçin
+3. "Ekle" butonuna tıklayın
+
+### Görev Düzenleme
+1. Görev kartındaki düzenleme (✏️) ikonuna tıklayın
+2. Düzenleme formunda değişiklikleri yapın
+3. "Kaydet" butonuna tıklayın
+
+### Görev Tamamlama
+1. Görev kartındaki tamamlama (✓) ikonuna tıklayın
+2. Görev tamamlandı olarak işaretlenecek
+
+### Filtreleme
+- Kategori, öncelik ve duruma göre filtreleme yapabilirsiniz
+- Son tarihe göre görevleri sıralayabilirsiniz
+
+## 🎨 Tasarım Özellikleri
+
+- Neon efektli modern tasarım
+- Duyarlı (responsive) arayüz
+- Kategori bazlı emoji gösterimi
+- Öncelik seviyelerine göre renk kodlaması
+- Hover efektleri ve animasyonlar
+
+## 📦 Proje Yapısı
+
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── todo-form/
+│   │   ├── todo-list/
+│   │   ├── filter/
+│   │   └── edit-todo/
+│   ├── services/
+│   │   └── todo.service.ts
+│   ├── models/
+│   │   └── todo.model.ts
+│   └── app.component.ts
+├── assets/
+└── styles.css
 ```
 
-## Building
+## 🤝 Katkıda Bulunma
 
-To build the project run:
+1. Bu depoyu fork edin
+2. Yeni bir branch oluşturun (`git checkout -b feature/yeniOzellik`)
+3. Değişikliklerinizi commit edin (`git commit -am 'Yeni özellik: X'`)
+4. Branch'inizi push edin (`git push origin feature/yeniOzellik`)
+5. Pull Request oluşturun
 
-```bash
-ng build
-```
+## 📝 Lisans
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
 
-## Running unit tests
+## 👥 İletişim
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Sorularınız veya önerileriniz için:
+- GitHub Issues
+- E-posta: ornek@email.com

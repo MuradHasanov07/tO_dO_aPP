@@ -1,24 +1,26 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TodoService, Todo } from '../../services/todo.service';
+import { TodoService } from '../../services/todo.service';
+import { Todo } from '../../models/todo.model';
 
 @Component({
   selector: 'app-todo-form',
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="todo-form-container">
+    <div class="form-container neon-border">
+      <h2 class="form-title">Yeni Görev Ekle</h2>
       <form (ngSubmit)="onSubmit()" #todoForm="ngForm">
         <div class="form-group">
-          <label for="title">Başlık</label>
+          <label for="title">Görev Başlığı</label>
           <input
             type="text"
             id="title"
             name="title"
             [(ngModel)]="todo.title"
             required
-            placeholder="Görev başlığı"
+            class="form-control"
           >
         </div>
 
@@ -28,43 +30,42 @@ import { TodoService, Todo } from '../../services/todo.service';
             id="description"
             name="description"
             [(ngModel)]="todo.description"
-            placeholder="Görev açıklaması"
-            rows="3"
+            class="form-control"
           ></textarea>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="category">Kategori</label>
-            <select
-              id="category"
-              name="category"
-              [(ngModel)]="todo.category"
-              required
-            >
-              <option value="">Seçiniz</option>
-              <option value="İş">İş</option>
-              <option value="Kişisel">Kişisel</option>
-              <option value="Alışveriş">Alışveriş</option>
-              <option value="Sağlık">Sağlık</option>
-              <option value="Eğitim">Eğitim</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label for="category">Kategori</label>
+          <select
+            id="category"
+            name="category"
+            [(ngModel)]="todo.category"
+            required
+            class="form-control"
+          >
+            <option value="">Seçiniz</option>
+            <option value="İş">İş</option>
+            <option value="Kişisel">Kişisel</option>
+            <option value="Alışveriş">Alışveriş</option>
+            <option value="Sağlık">Sağlık</option>
+            <option value="Eğitim">Eğitim</option>
+          </select>
+        </div>
 
-          <div class="form-group">
-            <label for="priority">Öncelik</label>
-            <select
-              id="priority"
-              name="priority"
-              [(ngModel)]="todo.priority"
-              required
-            >
-              <option value="">Seçiniz</option>
-              <option value="Yüksek">Yüksek</option>
-              <option value="Orta">Orta</option>
-              <option value="Düşük">Düşük</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label for="priority">Öncelik</label>
+          <select
+            id="priority"
+            name="priority"
+            [(ngModel)]="todo.priority"
+            required
+            class="form-control"
+          >
+            <option value="">Seçiniz</option>
+            <option value="Yüksek">Yüksek</option>
+            <option value="Orta">Orta</option>
+            <option value="Düşük">Düşük</option>
+          </select>
         </div>
 
         <div class="form-group">
@@ -75,164 +76,131 @@ import { TodoService, Todo } from '../../services/todo.service';
             name="dueDate"
             [(ngModel)]="todo.dueDate"
             required
+            class="form-control"
           >
         </div>
 
         <div class="form-actions">
           <button type="submit" class="btn-submit" [disabled]="!todoForm.form.valid">
-            {{ isEditing ? 'Güncelle' : 'Ekle' }}
-          </button>
-          <button type="button" class="btn-cancel" *ngIf="isEditing" (click)="cancelEdit()">
-            İptal
+            Ekle
           </button>
         </div>
       </form>
     </div>
   `,
   styles: [`
-    .todo-form-container {
-      background: white;
+    .form-container {
+      background-color: var(--dark-card);
       padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
       margin-bottom: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .form-title {
+      color: var(--text-light);
+      margin-bottom: 2rem;
+      text-align: center;
+      font-size: 2rem;
     }
 
     .form-group {
       margin-bottom: 1.5rem;
     }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
     label {
       display: block;
-      margin-bottom: 0.5rem;
-      color: #333;
-      font-weight: 500;
+      margin-bottom: 0.8rem;
+      color: var(--text-light);
+      font-size: 1.1rem;
     }
 
-    input, textarea, select {
+    .form-control {
       width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      padding: 1rem;
+      border: 1px solid #444;
+      border-radius: 6px;
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      transition: border-color 0.3s ease;
       font-size: 1rem;
-      transition: border-color 0.2s ease;
     }
 
-    input:focus, textarea:focus, select:focus {
+    .form-control:focus {
       outline: none;
-      border-color: #4a90e2;
+      border-color: var(--neon-blue);
+      box-shadow: var(--neon-shadow);
+    }
+
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
     }
 
     .form-actions {
       display: flex;
       gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .btn-submit, .btn-cancel {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
+      margin-top: 2rem;
     }
 
     .btn-submit {
-      background-color: #4a90e2;
-      color: white;
+      flex: 1;
+      padding: 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: var(--neon-blue);
+      color: var(--dark-bg);
     }
 
     .btn-submit:hover:not(:disabled) {
-      background-color: #357abd;
+      opacity: 0.9;
+      transform: translateY(-2px);
     }
 
     .btn-submit:disabled {
-      background-color: #ccc;
+      opacity: 0.5;
       cursor: not-allowed;
     }
 
-    .btn-cancel {
-      background-color: #f5f5f5;
-      color: #666;
-    }
-
-    .btn-cancel:hover {
-      background-color: #e0e0e0;
-    }
-
     @media (max-width: 768px) {
-      .todo-form-container {
-        padding: 1rem;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
+      .form-container {
+        padding: 1.5rem;
+        margin: 0 1rem;
       }
     }
   `]
 })
-export class TodoFormComponent implements OnInit {
-  todo: Todo = {
-    id: 0,
+export class TodoFormComponent {
+  todo: Omit<Todo, 'id'> = {
     title: '',
     description: '',
     category: '',
     priority: 'Orta',
-    dueDate: new Date().toISOString().split('T')[0],
-    completed: false
+    completed: false,
+    dueDate: new Date().toISOString().split('T')[0]
   };
-
-  private _editTodo: Todo | null = null;
-  isEditing = false;
-
-  @Input()
-  set editTodo(todo: Todo | null) {
-    if (todo) {
-      this._editTodo = todo;
-      this.todo = { ...todo };
-      this.isEditing = true;
-    }
-  }
-
-  get editTodo(): Todo | null {
-    return this._editTodo;
-  }
 
   constructor(private todoService: TodoService) {}
 
-  ngOnInit(): void {}
-
   onSubmit(): void {
-    if (this.isEditing && this._editTodo) {
-      this.todoService.updateTodo(this.todo);
-    } else {
-      this.todoService.addTodo(this.todo);
+    if (this.todo.title && this.todo.category && this.todo.priority && this.todo.dueDate) {
+      this.todoService.addTodo(this.todo).subscribe(() => {
+        // Formu sıfırla
+        this.todo = {
+          title: '',
+          description: '',
+          category: '',
+          priority: 'Orta',
+          completed: false,
+          dueDate: new Date().toISOString().split('T')[0]
+        };
+      });
     }
-    this.resetForm();
-  }
-
-  cancelEdit(): void {
-    this.resetForm();
-  }
-
-  private resetForm(): void {
-    this.todo = {
-      id: 0,
-      title: '',
-      description: '',
-      category: '',
-      priority: 'Orta',
-      dueDate: new Date().toISOString().split('T')[0],
-      completed: false
-    };
-    this._editTodo = null;
-    this.isEditing = false;
   }
 } 

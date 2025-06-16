@@ -1,91 +1,86 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { TodoService, Todo } from '../../services/todo.service';
+import { FormsModule } from '@angular/forms';
+import { TodoService } from '../../services/todo.service';
+import { Todo } from '../../models/todo.model';
 import { FilterComponent, FilterOptions } from '../filter/filter.component';
-import { TodoFormComponent } from '../todo-form/todo-form.component';
 
 @Component({
   selector: 'app-todo-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FilterComponent, TodoFormComponent],
+  imports: [CommonModule, RouterModule, FormsModule, FilterComponent],
   template: `
-    <div class="todo-list-container">
-      <h1 class="title">Görev Yöneticisi</h1>
-      
-      <app-todo-form></app-todo-form>
-      
-      <app-filter (filterChange)="onFilterChange($event)"></app-filter>
-      
-      <div class="todos-grid">
-        <div *ngFor="let todo of filteredTodos" class="todo-card" [class.completed]="todo.completed">
-          <div class="todo-header">
-            <h3 [class.completed-text]="todo.completed">{{ todo.title }}</h3>
-            <div class="todo-actions">
-              <button class="btn-complete" (click)="toggleComplete(todo.id)">
-                <i class="fas" [class.fa-check-circle]="todo.completed" [class.fa-circle]="!todo.completed"></i>
+    <div class="todo-list">
+      <div class="completed-tasks">
+        <h3>Tamamlanan Görevler {{ completedToday }}/5</h3>
+        <app-filter (filterChange)="onFilterChange($event)"></app-filter>
+      </div>
+      <div class="todos">
+        @for (todo of filteredTodos; track todo.id) {
+          <div class="todo-card" [class.completed]="todo.completed">
+            <div class="todo-header">
+              <button class="btn-complete" (click)="toggleComplete(todo)">
+                <i class="fas" [class.fa-check]="!todo.completed" [class.fa-check-circle]="todo.completed"></i>
               </button>
-              <a [routerLink]="['/edit', todo.id]" class="btn-edit">
-                <i class="fas fa-edit"></i>
-              </a>
-              <button class="btn-delete" (click)="deleteTodo(todo.id)">
-                <i class="fas fa-times"></i>
-              </button>
+              <h3 [class.completed]="todo.completed">{{ todo.title }}</h3>
+              <div class="todo-actions">
+                <button class="btn-edit" [routerLink]="['/edit', todo.id]">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-delete" (click)="deleteTodo(todo.id)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            <p class="description">{{ todo.description }}</p>
+            <div class="todo-details">
+              <span class="category">{{ getCategoryEmoji(todo.category) }} {{ todo.category }}</span>
+              <span class="priority" [class]="todo.priority.toLowerCase()">{{ todo.priority }}</span>
+              <span class="due-date">Son Tarih: {{ todo.dueDate | date:'dd/MM/yyyy' }}</span>
             </div>
           </div>
-          
-          <p class="description" *ngIf="todo.description">{{ todo.description }}</p>
-          
-          <div class="todo-details">
-            <span class="category">{{ todo.category }}</span>
-            <span class="priority" [class]="'priority-' + todo.priority.toLowerCase()">
-              {{ todo.priority }}
-            </span>
-            <span class="due-date">
-              {{ todo.dueDate | date:'dd/MM/yyyy' }}
-            </span>
-          </div>
-        </div>
+        }
       </div>
     </div>
   `,
   styles: [`
-    .todo-list-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    .title {
-      text-align: center;
-      color: #333;
-      margin-bottom: 2rem;
-      font-size: 2.5rem;
-      animation: fadeIn 0.5s ease-in;
-    }
-
-    .todos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
+    .todo-list {
       margin-top: 2rem;
     }
 
+    .completed-tasks {
+      margin-bottom: 1.5rem;
+    }
+
+    .completed-tasks h3 {
+      color: var(--text-color);
+      margin-bottom: 1rem;
+    }
+
+    .todos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
     .todo-card {
-      background: white;
+      background: var(--dark-card);
+      border: 1px solid transparent;
       border-radius: 10px;
       padding: 1.5rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: all 0.3s ease;
     }
 
     .todo-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      border-color: var(--neon-blue);
+      box-shadow: var(--neon-shadow);
+      transform: translateY(-2px);
     }
 
     .todo-card.completed {
       opacity: 0.7;
+      border-color: var(--neon-green);
     }
 
     .todo-header {
@@ -93,17 +88,19 @@ import { TodoFormComponent } from '../todo-form/todo-form.component';
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
+      gap: 1rem;
     }
 
     .todo-header h3 {
       margin: 0;
+      color: var(--text-light);
       font-size: 1.2rem;
-      color: #333;
+      flex: 1;
     }
 
-    .completed-text {
+    .todo-header h3.completed {
       text-decoration: line-through;
-      color: #888;
+      color: var(--text-secondary);
     }
 
     .todo-actions {
@@ -111,91 +108,86 @@ import { TodoFormComponent } from '../todo-form/todo-form.component';
       gap: 0.5rem;
     }
 
-    .btn-complete, .btn-edit, .btn-delete {
+    .todo-actions button {
       background: none;
       border: none;
+      color: var(--text-light);
       cursor: pointer;
-      font-size: 1.2rem;
-      transition: transform 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 2rem;
-      height: 2rem;
-      border-radius: 50%;
-    }
-
-    .btn-complete:hover, .btn-edit:hover, .btn-delete:hover {
-      transform: scale(1.1);
-    }
-
-    .btn-delete:hover {
-      color: #ff4444;
+      padding: 0.5rem;
+      border-radius: 5px;
+      transition: all 0.3s ease;
     }
 
     .btn-edit {
-      color: #4a90e2;
-      text-decoration: none;
+      color: var(--neon-blue);
+    }
+
+    .btn-delete {
+      color: var(--neon-red);
+    }
+
+    .btn-complete {
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+
+    .btn-complete i.fa-check-circle {
+      color: var(--neon-green);
+    }
+
+    .todo-actions button:hover {
+      background: var(--dark-bg);
     }
 
     .btn-edit:hover {
-      color: #357abd;
+      color: var(--neon-blue);
     }
 
-    .fa-check-circle {
-      color: #4CAF50;
+    .btn-delete:hover {
+      color: var(--neon-red);
     }
 
     .description {
-      color: #666;
+      color: var(--text-light);
       margin-bottom: 1rem;
       font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     .todo-details {
       display: flex;
-      gap: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
       font-size: 0.8rem;
     }
 
     .category, .priority, .due-date {
-      padding: 0.3rem 0.6rem;
-      border-radius: 15px;
-      background: #f0f0f0;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    .priority-yüksek {
-      background: #ffebee;
-      color: #c62828;
-    }
-
-    .priority-orta {
-      background: #fff3e0;
-      color: #ef6c00;
-    }
-
-    .priority-düşük {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
+    .priority {
+      font-weight: bold;
+      border-radius: 5px;
+      padding: 4px 10px;
+      
+      &.yüksek {
+        background-color: #ff1744;
+        color: #ffffff;
       }
-      to {
-        opacity: 1;
-        transform: translateY(0);
+      &.orta {
+        background-color: #ff9100;
+        color: #ffffff;
+      }
+      &.düşük {
+        background-color: #00c853;
+        color: #ffffff;
       }
     }
 
     @media (max-width: 768px) {
-      .todo-list-container {
-        padding: 1rem;
-      }
-
-      .todos-grid {
+      .todos {
         grid-template-columns: 1fr;
       }
     }
@@ -208,62 +200,84 @@ export class TodoListComponent implements OnInit {
     category: '',
     priority: '',
     status: '',
-    dueDate: ''
+    dueDate: null
   };
+  completedToday: number = 0;
 
   constructor(private todoService: TodoService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.loadTodos();
+  }
+
+  loadTodos() {
     this.todoService.getTodos().subscribe(todos => {
       this.todos = todos;
       this.applyFilters();
+      this.calculateCompletedToday();
     });
   }
 
-  toggleComplete(id: number): void {
-    this.todoService.toggleComplete(id);
-  }
-
-  deleteTodo(id: number): void {
-    this.todoService.deleteTodo(id);
-  }
-
-  onFilterChange(filters: FilterOptions): void {
+  onFilterChange(filters: FilterOptions) {
     this.currentFilters = filters;
     this.applyFilters();
   }
 
-  private applyFilters(): void {
+  private applyFilters() {
     this.filteredTodos = this.todos.filter(todo => {
-      // Kategori filtresi
       if (this.currentFilters.category && todo.category !== this.currentFilters.category) {
         return false;
       }
-
-      // Öncelik filtresi
       if (this.currentFilters.priority && todo.priority !== this.currentFilters.priority) {
         return false;
       }
-
-      // Durum filtresi
       if (this.currentFilters.status) {
-        if (this.currentFilters.status === 'Tamamlanan' && !todo.completed) {
+        if (this.currentFilters.status === 'completed' && !todo.completed) {
           return false;
         }
-        if (this.currentFilters.status === 'Tamamlanmayan' && todo.completed) {
+        if (this.currentFilters.status === 'active' && todo.completed) {
           return false;
         }
       }
-
-      // Tarih filtresi
       if (this.currentFilters.dueDate) {
-        const todoDate = new Date(todo.dueDate).toISOString().split('T')[0];
-        if (todoDate !== this.currentFilters.dueDate) {
+        const todoDate = new Date(todo.dueDate).toDateString();
+        const filterDate = new Date(this.currentFilters.dueDate).toDateString();
+        if (todoDate !== filterDate) {
           return false;
         }
       }
-
       return true;
     });
+  }
+
+  deleteTodo(id: number) {
+    this.todoService.deleteTodo(id).subscribe(() => {
+      this.loadTodos();
+    });
+  }
+
+  toggleComplete(todo: Todo) {
+    const updatedTodo = { ...todo, completed: !todo.completed };
+    this.todoService.updateTodo(updatedTodo).subscribe(() => {
+      this.loadTodos();
+    });
+  }
+
+  calculateCompletedToday() {
+    const today = new Date().toDateString();
+    this.completedToday = this.todos.filter(todo => 
+      todo.completed && todo.completedAt && new Date(todo.completedAt).toDateString() === today
+    ).length;
+  }
+
+  getCategoryEmoji(category: string): string {
+    const emojiMap: { [key: string]: string } = {
+      'İş': '💼',
+      'Kişisel': '🧍',
+      'Alışveriş': '🛒',
+      'Sağlık': '🏥',
+      'Eğitim': '🎓'
+    };
+    return emojiMap[category] || '';
   }
 } 
