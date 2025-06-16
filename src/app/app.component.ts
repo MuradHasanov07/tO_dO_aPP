@@ -6,15 +6,21 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [RouterOutlet],
   template: `
-    <div class="app-container">
+    <div class="container">
+      <h1>Görev Yöneticisi</h1>
       <router-outlet></router-outlet>
     </div>
   `,
   styles: [`
-    .app-container {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      padding: 2rem 0;
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
     }
   `]
 })
