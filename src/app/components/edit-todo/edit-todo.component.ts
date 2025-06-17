@@ -35,19 +35,6 @@ import { Todo } from '../../models/todo.model';
         </div>
 
         <div class="form-group">
-          <label for="description">Açıklama</label>
-          <textarea
-            id="description"
-            name="description"
-            [(ngModel)]="todo.description"
-            maxlength="100"
-            rows="3"
-            (input)="validateDescription()"
-          ></textarea>
-          <div class="char-counter">{{ todo.description.length }}/100</div>
-        </div>
-
-        <div class="form-group">
           <label for="category">Kategori</label>
           <select
             id="category"
@@ -99,6 +86,19 @@ import { Todo } from '../../models/todo.model';
               Düşük
             </button>
           </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Açıklama</label>
+          <textarea
+            id="description"
+            name="description"
+            [(ngModel)]="todo.description"
+            maxlength="100"
+            rows="3"
+            (input)="validateDescription()"
+          ></textarea>
+          <div class="char-counter">{{ todo.description.length }}/100</div>
         </div>
 
         <div class="form-group">
